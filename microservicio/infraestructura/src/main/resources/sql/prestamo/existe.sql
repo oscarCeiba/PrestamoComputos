@@ -1,0 +1,1 @@
+select count(1) from tb_solicitud_prestamo where cedula = :cedula and estado !=0

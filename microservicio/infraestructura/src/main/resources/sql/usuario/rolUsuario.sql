@@ -1,0 +1,1 @@
+select tipo_usuario from tb_usuario where cedula = :cedula

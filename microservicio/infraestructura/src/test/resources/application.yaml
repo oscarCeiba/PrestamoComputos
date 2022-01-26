@@ -1,0 +1,9 @@
+spring:
+   datasource:
+      driver-class-name: org.h2.Driver
+      jdbcUrl: jdbc:h2:mem:~/prestamo-computos
+      username: sa
+      password: sbh1q6JRpKQezsiSNPKFCu/Budjhal4M
+      hikari:
+         poolName: pool
+

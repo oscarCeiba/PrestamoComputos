@@ -1,0 +1,27 @@
+jasypt:
+   encryptor:
+      password: ${jasyptpwd:secretkey}
+      algorithm: PBEWithMD5AndDES
+
+server:
+   port: 8083
+   servlet:
+      context-path: /crear-solicitud
+      session:
+         timeout: 21600s
+
+spring:
+   datasource:
+      driver-class-name: org.h2.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      jdbcUrl: jdbc:h2:mem:~/prestamo-computos
+      username: sa
+      password: sbh1q6JRpKQezsiSNPKFCu/Budjhal4M
+      hikari:
+         poolName: pool
+
+jpa:
+   database: h2
+   show-sql: true
+   hibernate:
+      ddl-auto: update

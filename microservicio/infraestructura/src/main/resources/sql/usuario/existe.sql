@@ -1,0 +1,1 @@
+select count(1) from tb_usuario where cedula = :cedula
