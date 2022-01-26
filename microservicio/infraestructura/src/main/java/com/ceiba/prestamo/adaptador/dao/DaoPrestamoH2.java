@@ -13,7 +13,9 @@ import java.util.List;
 @Component
 public class DaoPrestamoH2 implements DaoPrestamo {
 
-    private final String EL_USUARIO_NO_TIENE_SOLICITUDES = "El usuario no tiene solicitudes de prestamos activas";
+    private static final String EL_USUARIO_NO_TIENE_SOLICITUDES = "El usuario no tiene solicitudes " +
+            "de prestamos activas";
+
     private final CustomNamedParameterJdbcTemplate customNamedParameterJdbcTemplate;
 
     @SqlStatement(namespace="prestamo", value="solicitudCreada")
@@ -26,7 +28,8 @@ public class DaoPrestamoH2 implements DaoPrestamo {
     public DtoPrestamo solicitudCreada(Long cedula){
         MapSqlParameterSource paramSource = new MapSqlParameterSource();
         paramSource.addValue("cedula", cedula);
-        List<DtoPrestamo> prestamo = this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate().query(sqlSolicitudCreada,paramSource, new MapeoPrestamo());
+        List<DtoPrestamo> prestamo = this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate()
+                .query(sqlSolicitudCreada,paramSource, new MapeoPrestamo());
         if(prestamo.isEmpty()){throw new ExcepcionTecnica(EL_USUARIO_NO_TIENE_SOLICITUDES);}
         return  prestamo.get(0);
     }
