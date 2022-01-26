@@ -30,7 +30,10 @@ public class DaoPrestamoH2 implements DaoPrestamo {
         paramSource.addValue("cedula", cedula);
         List<DtoPrestamo> prestamo = this.customNamedParameterJdbcTemplate.getNamedParameterJdbcTemplate()
                 .query(sqlSolicitudCreada,paramSource, new MapeoPrestamo());
-        if(prestamo.isEmpty()){throw new ExcepcionTecnica(EL_USUARIO_NO_TIENE_SOLICITUDES);}
+        if(prestamo.isEmpty())
+        {
+            throw new ExcepcionTecnica(EL_USUARIO_NO_TIENE_SOLICITUDES);
+        }
         return  prestamo.get(0);
     }
 }
