@@ -56,7 +56,7 @@ pipeline {
     }
     success {
       echo 'This will run only if successful'
-      junit '**/build/test-reports/*.xml.'
+      junit '**/test-reports/*.xml'
     }
     failure {
       echo 'This will run only if failed'
