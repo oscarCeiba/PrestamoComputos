@@ -66,8 +66,9 @@ class ServicioActualizarPrestamoTest {
     @DisplayName("Deberia actualizar prestamo sin suspension")
     void deberiaActualizarElPrestamoSinSuspension() {
         // arrange
+        LocalDate fechaEntrega = sumaFecha(10,LocalDate.now());
         Prestamo prestamo = new PrestamoTestDataBuilder().conId(1L).conCedula(1023009035l).conEstado(0)
-                .conFechaCreacion(LocalDate.parse("2022-01-12")).conFechaEntrega(LocalDate.parse("2022-01-26")).build();
+                .conFechaCreacion(LocalDate.now()).conFechaEntrega(fechaEntrega).build();
 
         RepositorioPrestamo repositorioPrestamo = Mockito.mock(RepositorioPrestamo.class);
         RepositorioUsuario repositorioUsuario = Mockito.mock(RepositorioUsuario.class);
