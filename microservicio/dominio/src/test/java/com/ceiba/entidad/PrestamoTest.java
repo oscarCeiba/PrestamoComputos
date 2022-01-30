@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PrestamoTest {
+class PrestamoTest {
 
     @Test
     @DisplayName("Deberia crear correctamente el prestamo")
@@ -51,6 +51,20 @@ public class PrestamoTest {
                     usuarioTestDataBuilder.build();
                 },
                 ExcepcionValorObligatorio.class, "Se debe ingresar la fecha de creación");
+    }
+
+    @Test
+    void deberiaFallarSinEquipoComputo() {
+
+        //Arrange
+        LocalDate fechaCreacion = LocalDate.now();
+        PrestamoTestDataBuilder usuarioTestDataBuilder = new PrestamoTestDataBuilder().conFechaCreacion(fechaCreacion)
+                .conCedula(1023009035L).conEquipoComputo(null);
+        //act-assert
+        BasePrueba.assertThrows(() -> {
+                    usuarioTestDataBuilder.build();
+                },
+                ExcepcionValorObligatorio.class, "Se debe registrar el equipo a solicitar");
     }
 
 

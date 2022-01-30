@@ -13,6 +13,8 @@ import com.ceiba.usuario.puerto.repositorio.RepositorioUsuario;
 import java.time.LocalDate;
 
 import static com.ceiba.dominio.ValidadorArgumento.*;
+import static com.ceiba.prestamo.modelo.enums.EnumEstadoSolicitud.*;
+import static com.ceiba.prestamo.modelo.enums.EnumRolUsuario.*;
 
 
 public class ServicioCrearPrestamo {
@@ -47,7 +49,7 @@ public class ServicioCrearPrestamo {
         validarSolicitudPrestamoExistenteEstado(prestamo);
         int rol = obtenerRolUsuario(prestamo);
         Prestamo prestamoCrear = new Prestamo(prestamo.getId(), prestamo.getCedula(), prestamo.getEquipoComputo(),
-                prestamo.getFechaCreacion(),calcularFechaEntregaPorRol(prestamo,rol),1);
+                prestamo.getFechaCreacion(),calcularFechaEntregaPorRol(prestamo,rol),ACTIVO.ordinal());
         this.repositorioPrestamo.crear(prestamoCrear);
         return LA_SOLICITUD_CREADA_TIENE_FECHA_DE_ENTREGA + prestamoCrear.getFechaEntrega();
     }
@@ -68,7 +70,7 @@ public class ServicioCrearPrestamo {
 
     private void validarSolicitudPrestamoEstado(Prestamo prestamo){
         DtoPrestamo prestamoEstado = this.daoPrestamo.solicitudCreada(prestamo.getCedula());
-        if(prestamoEstado.getEstado() == 1){
+        if(prestamoEstado.getEstado() == ACTIVO.ordinal()){
             throw new ExcepcionValorInvalido(EL_USUARIO_TIENE_SOLICITUD_ACTIVA);
         }else{
             validarSuspension(prestamoEstado);
@@ -79,7 +81,7 @@ public class ServicioCrearPrestamo {
         DtoSuspension suspension = this.daoSuspension.solicitudCreada(prestamo.getCedula());
         validarMenor(suspension.getFechaFinSuspension(), LocalDate.now(),EL_USUARIO_TIENE_SOLICITUD_SUSPENDIDA +
                 suspension.getFechaFinSuspension());
-        this.repositorioPrestamo.actualizarEstado(prestamo.getId(),0);
+        this.repositorioPrestamo.actualizarEstado(prestamo.getId(), INACTIVO.ordinal());
         this.repositorioSuspension.eliminar(suspension.getId());
     }
 
@@ -89,9 +91,9 @@ public class ServicioCrearPrestamo {
 
     private LocalDate calcularFechaEntregaPorRol(Prestamo prestamo,int rol){
         LocalDate fechaEntrega = null;
-         if(rol == 1){
+         if(rol == ESTUDIANTES.getRol()){
              fechaEntrega = sumaFecha(10,prestamo.getFechaCreacion());
-         }else if(rol == 2){
+         }else if(rol == ADMINISTRATIVOS.getRol()){
              fechaEntrega = sumaFecha(15,prestamo.getFechaCreacion());
          }else{
              throw new ExcepcionValorInvalido(EL_USUARIO_TIENE_ROL_NO_PERMITIDO);

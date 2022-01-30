@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class ServicioCrearPrestamoTest {
 
@@ -126,6 +127,9 @@ class ServicioCrearPrestamoTest {
         String respuesta =servicioCrearPrestamo.ejecutar(prestamo);
 
         //- assert
+        Mockito.verify(repositorioPrestamo,times(1)).actualizarEstado(Mockito.anyLong()
+                ,Mockito.anyInt());
+        Mockito.verify(repositorioSuspension,times(1)).eliminar(Mockito.anyLong());
         assertEquals("La solicitud fue realizada con exito, la fecha maxima de entrega es: "
                 + "2022-02-08" ,respuesta);
 

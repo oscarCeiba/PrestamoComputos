@@ -18,8 +18,10 @@ import org.mockito.Mockito;
 
 import java.time.LocalDate;
 
+import static com.ceiba.dominio.ValidadorArgumento.calcularDiasPorFecha;
 import static com.ceiba.dominio.ValidadorArgumento.sumaFecha;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class ServicioActualizarPrestamoTest {
 
@@ -142,5 +144,36 @@ class ServicioActualizarPrestamoTest {
         //- assert
         assertEquals("La solicitud fue actualizada " +
                 "con exito, la persona queda suspendida hasta: " + fechaFinSuspension,respuesta);
+    }
+
+    @Test
+    @DisplayName("Deberia crear suspension prestamo rol administrador")
+    void deberiaCrearSuspensionAdministrador() {
+        // arrange
+        LocalDate fechaFinSuspension = sumaFecha(30,LocalDate.now());
+        Prestamo prestamo = new PrestamoTestDataBuilder().conId(1L).conCedula(1023009035l).conEstado(2)
+                .conFechaCreacion(LocalDate.parse("2022-01-10")).conFechaEntrega(LocalDate.parse("2022-01-24")).build();
+        Long valorPago = calcularDiasPorFecha(prestamo.getFechaEntrega(),LocalDate.now());
+        Suspension suspension = new Suspension(2L,1023009035l,LocalDate.now(),fechaFinSuspension,valorPago);
+
+        RepositorioPrestamo repositorioPrestamo = Mockito.mock(RepositorioPrestamo.class);
+        RepositorioUsuario repositorioUsuario = Mockito.mock(RepositorioUsuario.class);
+        RepositorioSuspension repositorioSuspension = Mockito.mock(RepositorioSuspension.class);
+
+        Mockito.when(repositorioPrestamo.existe(Mockito.anyLong())).thenReturn(true);
+        Mockito.when(repositorioUsuario.rolUsuario(Mockito.anyLong())).thenReturn(2);
+        Mockito.when(repositorioSuspension.crear(suspension)).thenReturn(2L);
+        Mockito.doNothing().when(repositorioPrestamo).actualizar(prestamo);
+
+
+        ServicioActualizarPrestamo servicioActualizarPrestamo = new ServicioActualizarPrestamo(repositorioPrestamo,
+                repositorioUsuario,
+                repositorioSuspension);
+
+        // act - assert
+        String respuesta =servicioActualizarPrestamo.ejecutar(prestamo);
+
+        //- assert
+        Mockito.verify(repositorioPrestamo,times(1)).actualizar(prestamo);
     }
 }

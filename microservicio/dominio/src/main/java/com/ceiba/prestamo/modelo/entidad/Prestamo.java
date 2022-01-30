@@ -28,7 +28,6 @@ public class Prestamo {
                     LocalDate fechaEntrega ,int estado) {
 
         validarObligatorio(cedula, SE_DEBE_INGRESAR_LA_CEDULA_DE_USUARIO);
-        validarNumerico(String.valueOf(cedula), LA_CEDULA_ES_NUMERICA);
         validarObligatorio(equipoComputo, SE_DEBE_INGRESAR_EQUIPO_COMPUTO);
         validarObligatorio(fechaCreacion, SE_DEBE_INGRESAR_LA_FECHA_CREACION);
 

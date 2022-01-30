@@ -10,6 +10,8 @@ import com.ceiba.usuario.puerto.repositorio.RepositorioUsuario;
 import java.time.LocalDate;
 
 import static com.ceiba.dominio.ValidadorArgumento.*;
+import static com.ceiba.prestamo.modelo.enums.EnumEstadoSolicitud.*;
+import static com.ceiba.prestamo.modelo.enums.EnumRolUsuario.*;
 
 public class ServicioActualizarPrestamo {
 
@@ -19,6 +21,9 @@ public class ServicioActualizarPrestamo {
     private static final String LA_SOLICITUD_FUE_ACTUALIZADA_CON_EXITO = "La solicitud fue actualizada con exito";
     private static final String LA_SOLICITUD_FUE_ACTUALIZAD_Y_LA_FECHA_SUSPENSION_ES = "La solicitud fue actualizada " +
             "con exito, la persona queda suspendida hasta: ";
+    private static final String EL_USUARIO_TIENE_ROL_NO_PERMITIDO = "El usuario tiene un rol " +
+            "diferente al permitido para la solicitud";
+
 
     private final RepositorioPrestamo repositorioPrestamo;
     private final RepositorioUsuario repositorioUsuario;
@@ -42,7 +47,7 @@ public class ServicioActualizarPrestamo {
     }
 
     private void validarEstadoPeticion(Prestamo prestamo){
-        if(prestamo.getEstado() != 0 && prestamo.getEstado() != 2){
+        if(prestamo.getEstado() != INACTIVO.ordinal() && prestamo.getEstado() != SUSPENDIDO.ordinal()){
             throw new ExcepcionValorInvalido(EL_ESTADO_ENVIADO_ES_DIFERENTE);
         }
     }
@@ -64,9 +69,8 @@ public class ServicioActualizarPrestamo {
 
     private String calculoFechaMultaSuspension(Prestamo prestamo){
         int rol = obtenerRolUsuario(prestamo);
-        LocalDate fechaFinSuspension = calcularFechaSuspension(rol);
         Long multa = calcularMulta(prestamo,rol);
-        crearsolicitudSuspension(fechaFinSuspension,multa,prestamo);
+        LocalDate fechaFinSuspension = crearsolicitudSuspension(rol,multa,prestamo);
         return LA_SOLICITUD_FUE_ACTUALIZAD_Y_LA_FECHA_SUSPENSION_ES + fechaFinSuspension;
     }
 
@@ -76,28 +80,29 @@ public class ServicioActualizarPrestamo {
 
     private LocalDate calcularFechaSuspension(int rol){
         LocalDate fechaFinSuspension = null;
-        if(rol == 1){
+        if(rol == ESTUDIANTES.getRol()){
             fechaFinSuspension = sumaFecha(20,LocalDate.now());
-        }else if(rol == 2){
+        }else if(rol == ADMINISTRATIVOS.getRol()){
             fechaFinSuspension = sumaFecha(30,LocalDate.now());
         }
         return fechaFinSuspension;
     }
 
     private Long calcularMulta(Prestamo prestamo,int rol){
-        Long multa = 0L;
         Long dias;
-        if(rol == 1){
+        if(rol == ESTUDIANTES.getRol()){
             dias = calcularDiasPorFecha(prestamo.getFechaEntrega(),LocalDate.now());
-            multa = dias * 55500;
-        }else if(rol == 2){
+            return  dias * 55500;
+        }else if(rol == ADMINISTRATIVOS.getRol()){
             dias = calcularDiasPorFecha(prestamo.getFechaEntrega(),LocalDate.now());
-            multa = dias * 83500;
+            return dias * 83500;
+        }else{
+            throw new ExcepcionValorInvalido(EL_USUARIO_TIENE_ROL_NO_PERMITIDO);
         }
-        return multa;
     }
 
-    private void crearsolicitudSuspension(LocalDate fechaFinSuspension, Long multa,Prestamo prestamo){
+    private LocalDate crearsolicitudSuspension(int rol, Long multa,Prestamo prestamo){
+        LocalDate fechaFinSuspension = calcularFechaSuspension(rol);
         Suspension suspension = new Suspension(
                 prestamo.getId(),
                 prestamo.getCedula(),
@@ -105,5 +110,6 @@ public class ServicioActualizarPrestamo {
                 fechaFinSuspension,
                 multa);
         this.repositorioSuspension.crear(suspension);
+        return fechaFinSuspension;
     }
 }
