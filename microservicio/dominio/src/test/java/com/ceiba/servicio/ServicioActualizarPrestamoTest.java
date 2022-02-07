@@ -95,6 +95,8 @@ class ServicioActualizarPrestamoTest {
     void deberiaActualizarElPrestamoConSuspensionEstudiante() {
         // arrange
         LocalDate fechaFinSuspension = sumaFecha(20,LocalDate.now());
+        Long dias = calcularDiasPorFecha(LocalDate.parse("2022-01-24"),LocalDate.now());
+        Long multa = dias * 55500;
         Prestamo prestamo = new PrestamoTestDataBuilder().conId(1L).conCedula(1023009035l).conEstado(2)
                 .conFechaCreacion(LocalDate.parse("2022-01-10")).conFechaEntrega(LocalDate.parse("2022-01-24")).build();
 
@@ -115,7 +117,8 @@ class ServicioActualizarPrestamoTest {
 
         //- assert
         assertEquals("La solicitud fue actualizada " +
-                "con exito, la persona queda suspendida hasta: " + fechaFinSuspension,respuesta);
+                "con exito, la persona queda suspendida hasta: " + fechaFinSuspension +
+                ", con un pago para efectuar de: " + multa,respuesta);
     }
 
     @Test
@@ -123,6 +126,8 @@ class ServicioActualizarPrestamoTest {
     void deberiaActualizarElPrestamoConSuspensionAdministrador() {
         // arrange
         LocalDate fechaFinSuspension = sumaFecha(30,LocalDate.now());
+        Long dias = calcularDiasPorFecha(LocalDate.parse("2022-01-24"),LocalDate.now());
+        Long multa = dias * 83500;
         Prestamo prestamo = new PrestamoTestDataBuilder().conId(1L).conCedula(1023009035l).conEstado(2)
                 .conFechaCreacion(LocalDate.parse("2022-01-10")).conFechaEntrega(LocalDate.parse("2022-01-24")).build();
 
@@ -143,7 +148,8 @@ class ServicioActualizarPrestamoTest {
 
         //- assert
         assertEquals("La solicitud fue actualizada " +
-                "con exito, la persona queda suspendida hasta: " + fechaFinSuspension,respuesta);
+                "con exito, la persona queda suspendida hasta: " + fechaFinSuspension +
+                ", con un pago para efectuar de: " + multa,respuesta);
     }
 
     @Test

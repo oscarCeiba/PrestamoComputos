@@ -21,6 +21,7 @@ public class ServicioActualizarPrestamo {
     private static final String LA_SOLICITUD_FUE_ACTUALIZADA_CON_EXITO = "La solicitud fue actualizada con exito";
     private static final String LA_SOLICITUD_FUE_ACTUALIZAD_Y_LA_FECHA_SUSPENSION_ES = "La solicitud fue actualizada " +
             "con exito, la persona queda suspendida hasta: ";
+    private static final String CON_PAGO_DE_MULTA = ", con un pago para efectuar de: ";
     private static final String EL_USUARIO_TIENE_ROL_NO_PERMITIDO = "El usuario tiene un rol " +
             "diferente al permitido para la solicitud";
 
@@ -71,7 +72,8 @@ public class ServicioActualizarPrestamo {
         int rol = obtenerRolUsuario(prestamo);
         Long multa = calcularMulta(prestamo,rol);
         LocalDate fechaFinSuspension = crearsolicitudSuspension(rol,multa,prestamo);
-        return LA_SOLICITUD_FUE_ACTUALIZAD_Y_LA_FECHA_SUSPENSION_ES + fechaFinSuspension;
+        return LA_SOLICITUD_FUE_ACTUALIZAD_Y_LA_FECHA_SUSPENSION_ES + fechaFinSuspension
+                + CON_PAGO_DE_MULTA + multa;
     }
 
     private int obtenerRolUsuario(Prestamo prestamo){

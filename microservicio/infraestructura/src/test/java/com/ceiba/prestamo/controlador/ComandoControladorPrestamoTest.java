@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -92,6 +93,8 @@ class ComandoControladorPrestamoTest {
     void dberiaActualizarSolicitudPrestamoSuspension() throws Exception {
         //arrange
         LocalDate fechaSuspension = sumaFecha(20,LocalDate.now());
+        Long dias = calcularDiasPorFecha(LocalDate.parse("2022-01-24"),LocalDate.now());
+        Long multa = dias * 55500;
         ComandoPrestamo prestamo = new ComandoPrestamoTestDataBuilder()
                 .conId(2L)
                 .conCedula(1023009038L).conFechaCreacion(LocalDate.parse("2022-01-10"))
@@ -103,7 +106,8 @@ class ComandoControladorPrestamoTest {
                         .content(objectMapper.writeValueAsString(prestamo)))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'valor'='La solicitud fue actualizada con exito," +
-                        " la persona queda suspendida hasta: "+fechaSuspension+"'}"));
+                        " la persona queda suspendida hasta: "+fechaSuspension+ ", con un pago para efectuar de: "
+                        +multa+"'}"));
     }
 
     public static LocalDate sumaFecha(int diasSuma, LocalDate fechaActual) {
@@ -117,5 +121,15 @@ class ComandoControladorPrestamoTest {
         }
 
         return fechaActual;
+    }
+
+    public static Long calcularDiasPorFecha(LocalDate fechaPasada,LocalDate fechaActual){
+        final DayOfWeek diaInicial = fechaPasada.getDayOfWeek();
+        final DayOfWeek diaFinal = fechaActual.getDayOfWeek();
+
+        Long diasTotales = DAYS.between(fechaPasada,fechaActual);
+        Long finDeSemana = diasTotales -2 *((diaInicial.getValue())/7);
+
+        return finDeSemana + (diaInicial == DayOfWeek.SUNDAY ? 1 : 0) + (diaFinal == DayOfWeek.SUNDAY ? 1 :0);
     }
 }
