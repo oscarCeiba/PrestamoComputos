@@ -30,10 +30,9 @@ public class ComandoControladorPrestamo {
         return manejadorCrearPrestamo.ejecutar(comandoPrestamo);
     }
 
-	@PutMapping(value="/{id}")
+	@PutMapping
 	@ApiOperation("Actualizar Prestamo")
-	public ComandoRespuesta<String> actualizar(@RequestBody ComandoPrestamo comandoPrestamo,@PathVariable Long id) {
-		comandoPrestamo.setId(id);
+	public ComandoRespuesta<String> actualizar(@RequestBody ComandoPrestamo comandoPrestamo) {
 		return manejadorActualizarPrestamo.ejecutar(comandoPrestamo);
 	}
 }

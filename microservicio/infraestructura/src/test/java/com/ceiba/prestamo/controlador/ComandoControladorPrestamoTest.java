@@ -81,7 +81,7 @@ class ComandoControladorPrestamoTest {
                 .conFechaEntrega(fechaEntrega).build();
 
         //act - assert
-        mockMvc.perform(put("/prestamo/{id}",prestamo.getId())
+        mockMvc.perform(put("/prestamo")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(prestamo)))
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class ComandoControladorPrestamoTest {
                 .conFechaEntrega(LocalDate.parse("2022-01-24")).conEstado(2).build();
 
         //act - assert
-        mockMvc.perform(put("/prestamo/{id}",prestamo.getId())
+        mockMvc.perform(put("/prestamo")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(prestamo)))
                 .andExpect(status().isOk())
