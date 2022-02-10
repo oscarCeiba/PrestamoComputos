@@ -74,9 +74,9 @@ class ServicioCrearPrestamoTest {
         // arrange
         Prestamo prestamo = new PrestamoTestDataBuilder().conCedula(1023009035L).build();
         DtoPrestamo dtoPrestamo = new DtoPrestamo(1L,1023009035L,"asus",
-                LocalDate.parse("2021-12-27"),LocalDate.parse("2022-01-10"),2);
+                LocalDate.parse("2022-01-05"),LocalDate.parse("2022-01-19"),2);
         DtoSuspension dtoSuspension = new DtoSuspension(1L,1023009035L,
-                LocalDate.parse("2022-01-11"),LocalDate.parse("2022-02-08"),55500L);
+                LocalDate.parse("2022-01-20"),LocalDate.parse("2022-02-16"),55500L);
         RepositorioPrestamo repositorioPrestamo = Mockito.mock(RepositorioPrestamo.class);
         RepositorioUsuario repositorioUsuario = Mockito.mock(RepositorioUsuario.class);
         RepositorioSuspension repositorioSuspension = Mockito.mock(RepositorioSuspension.class);
